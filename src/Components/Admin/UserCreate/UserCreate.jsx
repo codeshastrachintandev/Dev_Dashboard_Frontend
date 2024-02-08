@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Switch, Table, Tag, Popconfirm, message, Select, Space } from "antd";
+import Create from '../../../API/Create';
 const { Option } = Select;
 
 export default function UserCreate() {
@@ -29,20 +30,13 @@ export default function UserCreate() {
         CreateUser(transformObject(values));
     };
     const CreateUser = async (payload) => {
-        console.log('Received values:', payload);
         showLoader(true);
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/CreateUser`,payload);  
-            if(response.data.success){
-                message.success('Create successfully');  
-                form.resetFields();
-                console.log('Create successfully:', response.data);
-            }else{
-                if(response.data.statusCode)message.error(response.data.message);  
-            }
-        } catch (error) {  
-            message.error('Error creating role');  
-            console.error('Error creating role:', error.message);
+            const responseData = await Create('/Users/CreateUser',payload);
+            console.log('Response:', responseData);
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle the error as needed
         } finally {
             fetchUserList();
             showLoader(false);

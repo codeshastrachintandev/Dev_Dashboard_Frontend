@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { POST } from '../../../API/CRUD';
+
 
 const onFinish = (values) => {
-    console.log('Success:', values);
+    try {
+        const responseData = POST('/Login/Login', values);
+        console.log('Response:', responseData);
+    } catch (error) {
+        console.error('Error:', error);
+        // Handle the error as needed
+    } finally {
+
+    }
 };
 const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
 };
 
 export default function Login() {
+    const [spinning, setSpinning] = React.useState(false);
+    const showLoader = (Isloader) => {
+        Isloader ? setSpinning(Isloader) :
+            setTimeout(() => {
+                setSpinning(false);
+            }, 1000);
+    };
+    
     return (
         <>
             <div className='container rolebox'>

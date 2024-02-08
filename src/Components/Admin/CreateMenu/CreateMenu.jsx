@@ -93,6 +93,12 @@ export default function CreateMenu() {
                         rules={[{ required: true, message: 'Please input your MenuDescription!' }]}>
                        <TextArea placeholder="Menu Description" autosize={{ minRows: 1, maxRows: 1   }} style={{ width: '15%' }} />
                     </Form.Item>
+                    <Form.Item
+                        label="Path for route"
+                        name="Path"
+                        rules={[{ required: true, message: 'Please input menu Path!' }]}>
+                        <Input style={{ width: '15%' }} />
+                    </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" onClick={() => { console.log('submit prssed!!!:(') }}>Submit</Button>
                     </Form.Item>

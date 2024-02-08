@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Spin, Form, Table, message, Select } from "antd";
+import { Button, Spin, Form, Table, message, Select, Space, Popconfirm } from "antd";
 import fetching from '../../../API/fetch';
-import ShowLoader from '../../Others/showLoader';
+import Delete from '../../../API/Detete';
 const { Option } = Select;
 
 export default function UserAssignMenu() {
@@ -10,9 +10,8 @@ export default function UserAssignMenu() {
     const [UserList, setUserList] = useState([]);
     const [MenuList, SetmenuList] = useState([]);
     const [UserAssignMenulist, SetUserAssignMenulist] = useState([]);
-    const [response,Setresponse] =useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
     const [form1] = Form.useForm();
-    const [form2] = Form.useForm();
     const showLoader = (Isloader) => {
         Isloader ? setSpinning(Isloader) :
             setTimeout(() => {
@@ -24,11 +23,6 @@ export default function UserAssignMenu() {
         console.log('values:', values);
         CreateUserAssignMenu(values);
     };
-    const onSearch = (values) => {
-        console.log('values:', values);
-        fetchUserAssignMenu(values);
-    };
-    
     const fetchMenu = async () => {
         showLoader(true);
         try {
@@ -42,10 +36,7 @@ export default function UserAssignMenu() {
             showLoader(false);
         }
     };
-    
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+
     const onSearchFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
@@ -65,10 +56,10 @@ export default function UserAssignMenu() {
         }
     };
     const fetchUserAssignMenu = async (payload) => {
-        console.log('Received values:', payload.User_id);
+        console.log('Received values:', payload);
         showLoader(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetUserAssignMenu?User_id=${payload.User_id}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetUserAssignMenu?User_id=${payload}`);
             if (response.data.success) {
                 console.log("print", response.data.data);
                 SetUserAssignMenulist(response.data.data);
@@ -95,6 +86,7 @@ export default function UserAssignMenu() {
             message.error('Error creating role');
             console.error('Error creating role:', error.message);
         } finally {
+            fetchUserAssignMenu(selectedUserId);
             showLoader(false);
         }
     };
@@ -124,11 +116,58 @@ export default function UserAssignMenu() {
             dataIndex: 'menuDescription',
             key: 'menuDescription',
         },
+        {
+            title: 'Path',
+            dataIndex: 'path',
+            key: 'path',
+        },
+        {
+            title: 'Action',
+            dataIndex: 'action',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Popconfirm
+                        title={'Remove the Menu'}
+                        description={`Are you sure to UnAssignMenu this User?`}
+                        onConfirm={() => UnAssignMenu(record.id)}
+                        onCancel={cancel}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <a style={{color:'red'}}>Remove</a>
+                    </Popconfirm>
+                </Space>
+            ),
+        },
     ];
+    const cancel = (e) => {
+        //console.log("print",e);
+        message.error('Click on No');
+    };
+    const UnAssignMenu = async(payload)=>{
+        showLoader(true);
+        try {
+            const responseData = await Delete('/Users/RemoveUserAssignMenu?id='+payload);
+            console.log('Response:', responseData);
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle the error as needed
+        } finally {
+            fetchUserAssignMenu(selectedUserId);
+            showLoader(false);
+        }
+    }
     useEffect(() => {
         fetchUser();
         fetchMenu();
     }, []);
+    useEffect(() => {
+        if (selectedUserId) {
+            console.log("selectedUserId",selectedUserId)
+            fetchUserAssignMenu(selectedUserId);
+        }
+    }, [selectedUserId]);
     return (<>
         <Spin spinning={spinning} fullscreen />
         <div className="container rolebox">
@@ -166,14 +205,13 @@ export default function UserAssignMenu() {
             </Form>
         </div>
         <div className="container rolebox">
-            <Form className='SearchUserAssignMenu' form={form2} onFinish={onSearch} onFinishFailed={onFinishFailed} autoComplete="off">
                 <div className='divflex'>
                     <Form.Item
                         name="User_id"
                         label="Select User"
                         rules={[{ required: true, message: 'Please select a user!' }]}
                     >
-                        <Select placeholder="Select a User" >
+                        <Select placeholder="Select a User"  onChange={(value) => setSelectedUserId(value)}>
                             {UserList.map(user => (
                                 <Option key={user.id} value={user.id}>
                                     {user.username} ({user.roleName})
@@ -181,11 +219,7 @@ export default function UserAssignMenu() {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">search</Button>
-                    </Form.Item>
                 </div>
-            </Form>
             <Table dataSource={UserAssignMenulist} columns={columns} />
         </div>
     </>);
