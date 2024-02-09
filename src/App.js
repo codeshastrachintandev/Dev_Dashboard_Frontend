@@ -18,8 +18,8 @@ import UserCreate from './Components/Admin/UserCreate/UserCreate';
 import CreateMenu from './Components/Admin/CreateMenu/CreateMenu';
 import UserAssignMenu from './Components/Admin/UserAssignMenu/UserAssignMenu';
 import Login from './Components/Auth/Login/Loginpage';
-import fetching from './API/fetch';
 import Chatpage from './Components/Chatpage/Chatpage';
+import GET from './API_Services/Services';
 
 const { Header, Sider } = Layout;
 
@@ -37,14 +37,14 @@ const App = () => {
         setSpinning(false);
       }, 500);
   };
-  const role_no = 0;
+  var role_no = 0;
   const fetchMenu = async () => {
     showLoader(true);
     try {
-      const responseData = await fetching('/Users/GetUserAssignMenu?User_id='+role_no);
+      const responseData = await GET('/Users/GetUserAssignMenu?User_id=' + role_no);
       console.log('Response:', responseData);
       setMenuItemlist(responseData.data);
-      
+
     } catch (error) {
       console.error('Error:', error);
       // Handle the error as needed
@@ -53,7 +53,9 @@ const App = () => {
     }
   };
   useEffect(() => {
-    fetchMenu();
+    if (role_no != 0) {
+      fetchMenu();
+    }
   }, []);
   return (
     <Router>
@@ -66,6 +68,7 @@ const App = () => {
             selectedKeys={[selectedMenuItem]}
             onClick={({ key }) => setSelectedMenuItem(key)}
           >
+            {/* role_no =0 is for Dev test */}
             {role_no === 0 ? (
               <>
                 <Menu.Item key="1" icon={<HomeOutlined />}>

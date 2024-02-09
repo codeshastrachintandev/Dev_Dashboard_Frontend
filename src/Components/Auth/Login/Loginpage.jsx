@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
-import { POST } from '../../../API/CRUD';
+import { LoginMethod, POST } from '../../../API_Services/Services';
 
 
 const onFinish = (values) => {
     try {
-        const responseData = POST('/Login/Login', values);
-        console.log('Response:', responseData);
+        LoginMethod(values);
     } catch (error) {
         console.error('Error:', error);
         // Handle the error as needed
@@ -54,6 +53,16 @@ const LoginForm = () => (
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
+        fields={[
+            {
+                name: ["username"],
+                value: 'Dev'
+            },
+            {
+                name: ["password"],
+                value: 'Admin123'
+            },
+            ]}
     >
         <Form.Item
             label="Username"
@@ -65,7 +74,7 @@ const LoginForm = () => (
                 },
             ]}
         >
-            <Input />
+            <Input  />
         </Form.Item>
 
         <Form.Item
@@ -78,7 +87,7 @@ const LoginForm = () => (
                 },
             ]}
         >
-            <Input.Password />
+            <Input.Password  />
         </Form.Item>
 
         <Form.Item

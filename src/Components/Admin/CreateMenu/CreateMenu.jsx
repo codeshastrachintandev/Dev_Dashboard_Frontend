@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Switch, Table, Tag, Popconfirm, message, Select, Space } from "antd";
 import TextArea from 'antd/es/input/TextArea';
+import GET from '../../../API_Services/Services';
 
 export default function CreateMenu() {
     const [spinning, setSpinning] = React.useState(false);
@@ -25,7 +26,7 @@ export default function CreateMenu() {
     const fetchMenu = async () => {
         showLoader(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetMenu`);  
+            const response = await GET('/Users/GetMenu');
             if (response.data.success) {
                 console.log("print", response.data.data);
                 setMenulist(response.data.data);

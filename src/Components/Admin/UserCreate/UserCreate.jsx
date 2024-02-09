@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Switch, Table, Tag, Popconfirm, message, Select, Space } from "antd";
-import Create from '../../../API/Create';
+import Create from '../../../API_Services/Create';
+import GET from '../../../API_Services/Services';
 const { Option } = Select;
 
 export default function UserCreate() {
@@ -17,14 +18,14 @@ export default function UserCreate() {
     };
     const transformObject = (originalObj) => {
         return {
-          id: 0,
-          username: originalObj.username.trim() || 'string',
-          password: originalObj.password.trim() || 'string',
-          email: originalObj.user?.email.trim() || 'string',
-          active: originalObj.active || false,
-          roleId: originalObj.roleId || 0,
+            id: 0,
+            username: originalObj.username.trim() || 'string',
+            password: originalObj.password.trim() || 'string',
+            email: originalObj.user?.email.trim() || 'string',
+            active: originalObj.active || false,
+            roleId: originalObj.roleId || 0,
         };
-      };
+    };
     const onFinish = (values) => {
         console.log('values:', values);
         CreateUser(transformObject(values));
@@ -32,7 +33,7 @@ export default function UserCreate() {
     const CreateUser = async (payload) => {
         showLoader(true);
         try {
-            const responseData = await Create('/Users/CreateUser',payload);
+            const responseData = await Create('/Users/CreateUser', payload);
             console.log('Response:', responseData);
         } catch (error) {
             console.error('Error:', error);
@@ -48,10 +49,9 @@ export default function UserCreate() {
     const fetchUserList = async () => {
         showLoader(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetAllUser`);
-            if (response.data.success) {
-                console.log("print", response.data.data);
-                setuserlist(response.data.data);
+            const response = await GET('/Users/GetAllUser');
+            if (response.success) {
+                setuserlist(response.data);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -62,7 +62,7 @@ export default function UserCreate() {
     const fetchRoleList = async () => {
         showLoader(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetRole`);
+            const response = GET('/Users/GetRole');
             if (response.data.success) {
                 console.log("print", response.data.data);
                 SetroleList(response.data.data);
@@ -137,10 +137,10 @@ export default function UserCreate() {
         payload.active ? payload.active = false : payload.active = true;
         try {
             const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/UserAction`, payload);
-            if(response.data.success){
+            if (response.data.success) {
                 message.success('Update successfully')
                 console.log('Update successfully', response.data);
-            }else{
+            } else {
                 message.error(response.data.message);
             }
         } catch (error) {
@@ -154,8 +154,11 @@ export default function UserCreate() {
     useEffect(() => {
         fetchUserList();
         fetchRoleList();
-    },[]);
+    }, []);
 
+    function onSearch(val) {
+        console.log('search:', val);
+    }
 
     return (
         <>
@@ -190,7 +193,15 @@ export default function UserCreate() {
                         label="Select Role"
                         rules={[{ required: true, message: 'Please select a role!' }]}
                     >
-                        <Select placeholder="Select a role" style={{ width: '15%' }}>
+                        <Select 
+                            placeholder="Select a role"
+                            showSearch
+                            style={{ width: '15%' }}
+                            onSearch={onSearch}
+                            filterOption={(input, option) =>
+                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
                             {RoleList.map(role => (
                                 <Option key={role.id} value={role.id}>
                                     {role.roleName}

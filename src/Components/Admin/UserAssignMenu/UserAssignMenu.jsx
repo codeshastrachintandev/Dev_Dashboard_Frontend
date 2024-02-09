@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Table, message, Select, Space, Popconfirm } from "antd";
-import fetching from '../../../API/fetch';
-import Delete from '../../../API/Detete';
+import Delete from '../../../API_Services/Detete';
+import { GET, POST } from '../../../API_Services/Services';
 const { Option } = Select;
 
 export default function UserAssignMenu() {
@@ -26,8 +26,7 @@ export default function UserAssignMenu() {
     const fetchMenu = async () => {
         showLoader(true);
         try {
-            const responseData = await fetching('/Users/GetMenu');
-            console.log('Response:', responseData);
+            const responseData = await GET('/Users/GetMenu');
             SetmenuList(responseData.data);
         } catch (error) {
             console.error('Error:', error);
@@ -44,11 +43,11 @@ export default function UserAssignMenu() {
     const fetchUser = async () => {
         showLoader(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetUser`);
-            if (response.data.success) {
-                console.log("print", response.data.data);
-                setUserList(response.data.data);
+            const response = await GET('/Users/GetUser');
+            if (response.success) {
+                setUserList(response.data);
             }
+            
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -59,10 +58,9 @@ export default function UserAssignMenu() {
         console.log('Received values:', payload);
         showLoader(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/GetUserAssignMenu?User_id=${payload}`);
-            if (response.data.success) {
-                console.log("print", response.data.data);
-                SetUserAssignMenulist(response.data.data);
+            const response = await GET('/Users/GetUserAssignMenu?User_id='+payload);
+            if (response.success) {
+                SetUserAssignMenulist(response.data);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -74,38 +72,28 @@ export default function UserAssignMenu() {
         console.log('Received values:', payload);
         showLoader(true);
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT_DEV}/Users/CreateUserAssignMenu`, payload);
-            if (response.data.success) {
+            const response = await POST('/Users/CreateUserAssignMenu',payload);
+            if (response.success) {
                 message.success('Create successfully');
                 form1.resetFields();
+                fetchUserAssignMenu(selectedUserId);
                 console.log('Create successfully:', response.data);
             } else {
-                if (response.data.statusCode) message.error(response.data.message);
+                if (response.data.statusCode) message.error(response.message);
             }
         } catch (error) {
             message.error('Error creating role');
             console.error('Error creating role:', error.message);
         } finally {
-            fetchUserAssignMenu(selectedUserId);
             showLoader(false);
         }
     };
     const columns = [
-        // {
-        //     title: 'User ID',
-        //     dataIndex: 'userId',
-        //     key: 'userId',
-        // },
         {
             title: 'User Name',
             dataIndex: 'userName',
             key: 'userName',
         },
-        // {
-        //     title: 'Menu ID',
-        //     dataIndex: 'menuId',
-        //     key: 'menuId',
-        // },
         {
             title: 'Menu Name',
             dataIndex: 'menuName',
@@ -150,11 +138,11 @@ export default function UserAssignMenu() {
         try {
             const responseData = await Delete('/Users/RemoveUserAssignMenu?id='+payload);
             console.log('Response:', responseData);
+            fetchUserAssignMenu(selectedUserId);
         } catch (error) {
             console.error('Error:', error);
             // Handle the error as needed
         } finally {
-            fetchUserAssignMenu(selectedUserId);
             showLoader(false);
         }
     }
