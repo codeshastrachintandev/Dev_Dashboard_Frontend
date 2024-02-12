@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Table, message, Select, Space, Popconfirm } from "antd";
-import Delete from '../../../API_Services/Detete';
-import { GET, POST } from '../../../API_Services/Services';
+import { Delete, GET, POST } from '../../../API_Services/Services';
 const { Option } = Select;
 
 export default function UserAssignMenu() {
@@ -82,7 +81,6 @@ export default function UserAssignMenu() {
                 if (response.data.statusCode) message.error(response.message);
             }
         } catch (error) {
-            message.error('Error creating role');
             console.error('Error creating role:', error.message);
         } finally {
             showLoader(false);

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Switch, Table, Tag, Popconfirm, message, Select, Space } from "antd";
-import Create from '../../../API_Services/Create';
-import GET from '../../../API_Services/Services';
+import GET, { POST } from '../../../API_Services/Services';
 const { Option } = Select;
 
 export default function UserCreate() {
@@ -33,7 +32,7 @@ export default function UserCreate() {
     const CreateUser = async (payload) => {
         showLoader(true);
         try {
-            const responseData = await Create('/Users/CreateUser', payload);
+            const responseData = await POST('/Users/CreateUser', payload);
             console.log('Response:', responseData);
         } catch (error) {
             console.error('Error:', error);

@@ -1,0 +1,64 @@
+/* Layout */
+.ant-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f2f5; /* Light grey background for contrast */
+  }
+  
+  .ant-layout-header,
+  .ant-layout-footer {
+    background: transparent;
+    height: auto;
+    line-height: initial;
+    padding: 16px;
+    text-align: center;
+  }
+  
+  /* Typography */
+  .ant-layout-header h1,
+  .ant-layout-footer {
+    color: #555; /* Subtle text color */
+  }
+  
+  /* Form */
+  .ant-form {
+    max-width: 350px;
+    width: 350px;
+    margin: auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
+  }
+  
+  .ant-form-item {
+    margin-bottom: 16px; /* Consistent spacing between form items */
+  }
+  
+  /* Input & Button */
+  .ant-input,
+  .ant-btn {
+    border-radius: 4px; /* Slightly rounded edges for input fields and buttons */
+  }
+  
+  .ant-btn-primary {
+    background-color: #1890ff; /* Default Ant Design primary color */
+    border-color: #1890ff;
+    height: 40px; /* Taller button for emphasis */
+    font-weight: 500; /* Slightly bolder text in button */
+  }
+  
+  /* Links */
+  a {
+    display: inline-block;
+    margin-top: 12px; /* Space between button and link */
+    color: #1890ff; /* Link color matching button */
+    transition: color 0.3s; /* Smooth color transition on hover */
+  }
+  
+  a:hover {
+    color: #40a9ff; /* Lighter blue on hover */
+  }
