@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Space, Switch, Table, Tag, Popconfirm, message } from "antd";
+import { GET } from '../../../API_Services/Services';
 
 export default function DisplayRole() {
     const [spinning, setSpinning] = React.useState(false);
@@ -16,13 +17,13 @@ export default function DisplayRole() {
     const fetchData = async () => {
         showLoader(true);
         try {
-            const response = await axios.get('https://localhost:7255/api/Users/GetRole');
-            if (response.data.success) {
-                console.log("print", response.data.data);
-                newarray(response.data.data);
+            const response = await GET('/Users/GetRole');
+            if (response.success) {
+                console.log("print GetRole", response.data);
+                newarray(response.data);
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error("print GetRole",'Error fetching data:', error);
         } finally {
             showLoader(false);
         }

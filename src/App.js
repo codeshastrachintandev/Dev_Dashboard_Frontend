@@ -10,6 +10,7 @@ import {
   PicRightOutlined,
   LoginOutlined,
   WechatWorkOutlined,
+  PrinterOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme } from 'antd';
 import HeaderBar from './Components/TopHeader/HeaderBar';
@@ -21,6 +22,7 @@ import Login from './Components/Auth/Login/Loginpage';
 import Chatpage from './Components/Chatpage/Chatpage';
 import GET from './API_Services/Services';
 import LoginPage from './Components/Auth/Login/Login';
+import Print from './Components/Print/Print';
 
 const { Header, Sider } = Layout;
 
@@ -103,6 +105,9 @@ const App = () => {
               <Menu.Item key="7" icon={<WechatWorkOutlined />}>
                 <Link to="/Chatpage">Chat page</Link>
               </Menu.Item>
+              <Menu.Item key="8" icon={<PrinterOutlined />}>
+                <Link to="/Print">Print</Link>
+              </Menu.Item>
             </>
           ) : (
             menuItemlist.map((menu, index) => (
@@ -141,6 +146,7 @@ const App = () => {
           <Route exact path="/AssignMenu" element={<UserAssignMenu />} />
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Chatpage" element={<Chatpage />} />
+          <Route exact path="/Print" element={<Print />} />
         </Routes>
       </Layout>
     </Layout>;

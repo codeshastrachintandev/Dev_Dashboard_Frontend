@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Switch, Table, Tag, Popconfirm, message, Select, Space } from "antd";
-import GET, { POST } from '../../../API_Services/Services';
+import { GET, POST } from '../../../API_Services/Services';
 const { Option } = Select;
 
 export default function UserCreate() {
@@ -61,13 +61,13 @@ export default function UserCreate() {
     const fetchRoleList = async () => {
         showLoader(true);
         try {
-            const response = GET('/Users/GetRole');
-            if (response.data.success) {
-                console.log("print", response.data.data);
-                SetroleList(response.data.data);
+            const response = await GET('/Users/GetRole');
+            if (response.success) {
+                console.log("print GetRole", response.data);
+                SetroleList(response.data);
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error("print GetRole",'Error fetching data:', error);
         } finally {
             showLoader(false);
         }
@@ -153,6 +153,18 @@ export default function UserCreate() {
     useEffect(() => {
         fetchUserList();
         fetchRoleList();
+        if(true){
+            const initialValues = {
+                username: 'test',
+                password: 'defaultPassword',
+                user: {
+                    email: 'defaultEmail@example.com',
+                },
+                roleId: '1',
+                active: true,
+            };
+            form.setFieldsValue(initialValues);
+        }
     }, []);
 
     function onSearch(val) {
