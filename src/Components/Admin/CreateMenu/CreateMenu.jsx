@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Switch, Table, Tag, Popconfirm, message, Select, Space } from "antd";
 import TextArea from 'antd/es/input/TextArea';
-import GET from '../../../API_Services/Services';
+import { GET } from '../../../API_Services/Services';
+import copy from 'copy-to-clipboard';
+
 
 export default function CreateMenu() {
     const [spinning, setSpinning] = React.useState(false);
@@ -27,9 +29,9 @@ export default function CreateMenu() {
         showLoader(true);
         try {
             const response = await GET('/Users/GetMenu');
-            if (response.data.success) {
-                console.log("print", response.data.data);
-                setMenulist(response.data.data);
+            if (response.success) {
+                console.log("print", response.data);
+                setMenulist(response.data);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -72,11 +74,27 @@ export default function CreateMenu() {
             title: 'Menu Description',
             dataIndex: 'menuDescription',
             key: 'menuDescription',
+        },{
+            title: 'Route Path',
+            dataIndex: 'path',
+            key: 'path',
+            render: (text) => (
+                <span
+                    style={{ cursor: 'pointer', color: 'blue' }}
+                    onClick={() => handleCopyToClipboard(text)}
+                >
+                    {text}
+                </span>
+            ),
         }
     ];
+    const handleCopyToClipboard = (text) => {
+        copy(text);
+        message.success('Copied to clipboard');
+    };
     useEffect(() => {
         fetchMenu();
-    }, []);
+    },[]);
     return( <>
             <Spin spinning={spinning} fullscreen />
             <div className="container rolebox">

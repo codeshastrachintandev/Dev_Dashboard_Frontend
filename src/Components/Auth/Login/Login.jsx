@@ -4,7 +4,7 @@ import { Layout, Form, Input, Checkbox, Button, Alert } from 'antd';
 import { LoginMethod } from '../../../API_Services/Services';
 const { Header, Content, Footer } = Layout;
 
-const LoginPage = () => {
+const LoginPage = (setToken) => {
     const onFinish = (values) => {
         try {
             LoginMethod(values);
@@ -20,8 +20,8 @@ const LoginPage = () => {
     };
 
     return (
-        <Layout style={{ backgroundImage: `url("https://repository-images.githubusercontent.com/356367080/35485400-99f2-11eb-90ad-0dbd618410db")`,height:'100vh', color: 'white' }}>
-            <Content className='rolebox' style={{ padding: '50px', marginTop: '150px' }}>
+        <Layout style={{ height: '100vh', color: 'white', background: "#7fbcf2" }}>
+            <Content className='' style={{ padding: '50px', marginTop: '150px' }}>
                 <Form
                     name="basic"
                     labelCol={{

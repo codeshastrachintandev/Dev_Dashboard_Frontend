@@ -18,7 +18,6 @@ import DisplayRole from './Components/Admin/Roles/Role';
 import UserCreate from './Components/Admin/UserCreate/UserCreate';
 import CreateMenu from './Components/Admin/CreateMenu/CreateMenu';
 import UserAssignMenu from './Components/Admin/UserAssignMenu/UserAssignMenu';
-import Login from './Components/Auth/Login/Loginpage';
 import Chatpage from './Components/Chatpage/Chatpage';
 import GET from './API_Services/Services';
 import LoginPage from './Components/Auth/Login/Login';
@@ -34,15 +33,22 @@ const App = () => {
   } = theme.useToken();
   const [selectedMenuItem, setSelectedMenuItem] = useState('1');
   const [menuItemlist, setMenuItemlist] = useState([]);
-  const [token, setToken] = useState([]);
+  const [token, setToken] = useState();
   const isLoggedIn = token !== null;
-  
+
+  useEffect(()=>{
+    var token = sessionStorage.getItem("token");
+    setToken(token);
+    console.log("token->",token);
+  },[isLoggedIn,token]);
+
   const showLoader = (Isloader) => {
     Isloader ? setSpinning(Isloader) :
       setTimeout(() => {
         setSpinning(false);
       }, 500);
   };
+
   var role_no = 0;
   const fetchMenu = async () => {
     showLoader(true);
@@ -58,17 +64,13 @@ const App = () => {
       showLoader(false);
     }
   };
+
   useEffect(() => {
     if (role_no) {
       fetchMenu();
     }
   }, [role_no]);
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      alert("Your Session is expired");
-    }
-  }, [isLoggedIn]);
 
   let content;
   if (isLoggedIn) {
@@ -102,12 +104,12 @@ const App = () => {
               <Menu.Item key="6" icon={<LoginOutlined />}>
                 <Link to="/Login">Login page</Link>
               </Menu.Item>
-              <Menu.Item key="7" icon={<WechatWorkOutlined />}>
+              {/* <Menu.Item key="7" icon={<WechatWorkOutlined />}>
                 <Link to="/Chatpage">Chat page</Link>
               </Menu.Item>
               <Menu.Item key="8" icon={<PrinterOutlined />}>
                 <Link to="/Print">Print</Link>
-              </Menu.Item>
+              </Menu.Item> */}
             </>
           ) : (
             menuItemlist.map((menu, index) => (
@@ -144,7 +146,7 @@ const App = () => {
           <Route exact path="/menu" element={<CreateMenu />} />
           <Route exact path="/user" element={<UserCreate />} />
           <Route exact path="/AssignMenu" element={<UserAssignMenu />} />
-          <Route exact path="/Login" element={<Login />} />
+          <Route exact path="/Login" element={<LoginPage />} />
           <Route exact path="/Chatpage" element={<Chatpage />} />
           <Route exact path="/Print" element={<Print />} />
         </Routes>

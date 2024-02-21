@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Spin, Form, Input, Space, Switch, Table, Tag, Popconfirm, message } from "antd";
-import { GET } from '../../../API_Services/Services';
+import { GET, PUT } from '../../../API_Services/Services';
 
 export default function DisplayRole() {
     const [spinning, setSpinning] = React.useState(false);
@@ -56,15 +56,13 @@ export default function DisplayRole() {
     };
     const updateRoleAction = async (payload) => {
         showLoader(true);
-        const url = 'https://localhost:7255/api/Users/RoleAction';
         payload.active ? payload.active = false : payload.active = true;
         try {
-            const response = await axios.put(url, payload);
-            message.success('Update successful')
-            console.log('Update successful:', response.data);
+            const responseData = await PUT('/Users/RoleAction', payload);
+            console.log('Response:', responseData);
         } catch (error) {
-            message.error('Error updating role action');
-            console.error('Error updating role action:', error.message);
+            console.error('Error:', error);
+            // Handle the error as needed
         } finally {
             fetchData();
             showLoader(false);
@@ -139,7 +137,7 @@ export default function DisplayRole() {
                         <Switch defaultChecked />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" onClick={()=>{console.log('submit prssed!!!:(')}}>Submit</Button>
+                        <Button type="primary" htmlType="submit">Submit</Button>
                     </Form.Item>
                 </Form>
             </div>
